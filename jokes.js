@@ -1,16 +1,17 @@
 const fs = require('fs');
-const {Joke} = require("bee-jokes");
+const { Joke } = require("bee-jokes");
 const Chance = require('chance').Chance();
-
+const joke_file = 'jokes.json';
+const joke_bank = new Joke();
 
 const saveJokes = (jokes) => {
     const dataJSON = JSON.stringify(jokes);
-    fs.writeFileSync('jokes.json', dataJSON);
+    fs.writeFileSync(joke_file, dataJSON);
 }
 
 const loadJokes = () => {
     try {
-        const dataBuffer = fs.readFileSync('jokes.json');
+        const dataBuffer = fs.readFileSync(joke_file);
         const dataJSON = dataBuffer.toString();
         return JSON.parse(dataJSON);
     } catch (e) {
@@ -19,25 +20,25 @@ const loadJokes = () => {
 }
 
 const addRandomJoke = () => {
-    const joke = new Joke();
-    const my_joke = joke.getJoke({});
-    console.log(my_joke);
-
+    const my_joke = joke_bank.getJoke({});
     const jokes = loadJokes();
-    const duplicateJokes = jokes.find((joke) => joke.joke === my_joke.joke);
+    const name = Chance.name();
+    const duplicateJokes = jokes.find((joke) => joke.name.toLowerCase() === name.toLowerCase());
 
-    if(!duplicateJokes){
-        //we didnt find any duplicates
-        jokes.push({
-            joke: my_joke.joke,
-            name: Chance.name(),
-            age: Chance.age()
-        });
-        saveJokes(jokes);
-        console.log("new joke added");
-    } else {
-        console.log("joke author taken");
+    while(duplicateJokes){
+        name = Chance.name();
+        duplicateJokes = jokes.find((joke) => joke.name.toLowerCase() === name.toLowerCase());
     }
+    //we didnt find any duplicates
+    jokes.push({
+        joke: my_joke.joke,
+        name: name,
+        age: Chance.age()
+    });
+    saveJokes(jokes);
+    console.log("new joke added");
+    console.log('joke: ' + my_joke.joke);
+    console.log('author: ' + name);
 }
 
 const showJokes = () => {
@@ -45,12 +46,13 @@ const showJokes = () => {
     console.log('Your jokes:');
     jokes.forEach((joke) => {
         console.log("joke: " + joke.joke);
+        console.log("joke author: " + joke.name);
     });
 }
 
 const getJoke = (author) => {
     const jokes = loadJokes();
-    const joke = jokes.find((joke) => joke.name === author);
+    const joke = jokes.find((joke) => joke.name.toLowerCase() === author.toLowerCase());
 
     if (joke){
         console.log(joke.name);
@@ -62,37 +64,37 @@ const getJoke = (author) => {
 
 const removeJoke = (author) => {
     const jokes = loadJokes();
-    const jokesToKeep = jokes.filter((joke) => joke.name !== author); // if false (note is not duplicate) then not keeping it in list
+    const jokesToKeep = jokes.filter((joke) => joke.name.toLowerCase() !== author.toLowerCase());
 
-    if (jokes.length > jokesToKeep){
+    if (jokes.length > jokesToKeep.length){
         console.log('joke removed');
+        saveJokes(jokesToKeep);
     } else {
         console.log('no joke found');
     }
 
-    saveJokes(jokesToKeep);
 }
 
 const addInTheLanguage = (language) => {
-    const joke = new Joke();
-    const randomJoke = joke.getRandomJoke(language);
+    const randomJoke = joke_bank.getRandomJoke(language);
     if(randomJoke === null){
         console.log("no jokes in this language");
     } else{
         const jokes = loadJokes();
-        const duplicateJokes = jokes.find((joke) => joke.joke === randomJoke.joke);
+        const name = Chance.name();
+        const duplicateJokes = jokes.find((joke) => joke.name.toLowerCase() === name.toLowerCase());
 
         if(!duplicateJokes){
             //we didnt find any duplicates
             jokes.push({
                 joke: randomJoke.joke,
-                name: Chance.name(),
+                name: name,
                 age: Chance.age()
             });
             saveJokes(jokes);
             console.log("new joke added");
         } else {
-            console.log("joke already used");
+            console.log("joke author already made a joke, try again");
         }
     }
 

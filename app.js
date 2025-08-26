@@ -54,7 +54,7 @@ yargs.command({
 
 // create joke in specific language command
 yargs.command({
-    command: 'add-by-language',
+    command: 'add-by-language-code',
     describe: 'adds joke in specific language',
     builder: {
         language: {
