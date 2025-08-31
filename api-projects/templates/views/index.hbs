@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>weather</title>
+    {{!-- <link rel="icon" href="/img/weatherIcon.png"> --}}
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="main-content">
+        <h1>משימה שניה של node!</h1>
+        <form>
+            <input type="text" id="wordInput"><br><br>
+            <button id="submitWord">submit word</button>
+            <button id="randomizeBtn">randomize word</button>
+        </form>
+        <p id="meaning">meaning: </p>
+        <p id="synonyms">synonyms: </p>
+        <p id="example">example: </p>
+        <br>
+        <button id="translateBtn">translate content to piracy</button>
+        <p id="meaningTranslation">translated: </p>
+
+    </div>
+    {{>footer}}
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
